@@ -1,0 +1,33 @@
+name: GitOps Pipeline
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login Docker
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | \
+             docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+
+      - name: Build Image
+        run: docker build -t your-user/gitops-demo:${{ github.run_number }} .
+
+      - name: Push Image
+        run: docker push your-user/gitops-demo:${{ github.run_number }}
+
+      - name: Update Env Repo
+        run: |
+          git clone https://github.com/your/env-repo.git
+          cd env-repo/dev
+          sed -i "s|image:.*|image: your-user/gitops-demo:${{ github.run_number }}|g" deployment.yaml
+          git config user.name github-actions
+          git config user.email actions@github.com
+          git commit -am "update image"
+          git push
