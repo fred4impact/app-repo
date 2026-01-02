@@ -18,13 +18,15 @@ def home():
                 height: 100vh;
                 margin: 0;
                 font-family: Arial, sans-serif;
-                background-color: #f5f5f5;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             }
             .content {
                 text-align: center;
-                font-size: 24px;
-                font-weight: bold;
-                color: #333;
+                font-size: 48px;
+                font-weight: 900;
+                color: #ffffff;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+                line-height: 1.4;
             }
         </style>
     </head>
