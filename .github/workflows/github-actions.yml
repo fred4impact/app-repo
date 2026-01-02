@@ -31,12 +31,17 @@ jobs:
           cache-to: type=inline
 
       - name: Update Env Repo
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
-          git clone https://${{ secrets.GH_PAT }}@github.com/fred4impact/env-repo.git
-          cd env-repo/dev
-          sed -i "s|image:.*|image: runtesting/gitops-demo:${{ github.run_number }}|g" deployment.yaml
+          git clone https://${GH_TOKEN}@github.com/fred4impact/env-repo.git
+          cd env-repo
           git config user.name github-actions[bot]
           git config user.email actions@github.com
-          git add deployment.yaml
+          cd dev
+          sed -i "s|image:.*|image: runtesting/gitops-demo:${{ github.run_number }}|g" deployment.yaml
+          cd ..
+          git add dev/deployment.yaml
           git commit -m "Update image to runtesting/gitops-demo:${{ github.run_number }}"
-          git push https://${{ secrets.GH_PAT }}@github.com/fred4impact/env-repo.git
+          git remote set-url origin https://${GH_TOKEN}@github.com/fred4impact/env-repo.git
+          git push origin master
