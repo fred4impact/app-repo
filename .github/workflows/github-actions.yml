@@ -12,22 +12,31 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Login Docker
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | \
-          docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Build Image
-        run: docker build -t runtesting/gitops-demo:${{ github.run_number }} .
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Push Image
-        run: docker push runtesting/gitops-demo:${{ github.run_number }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: runtesting/gitops-demo:${{ github.run_number }}
+          cache-from: type=registry,ref=runtesting/gitops-demo:latest
+          cache-to: type=inline
 
       - name: Update Env Repo
         run: |
-          git clone https://github.com/fred4impact/env-repo.git
+          git clone https://${{ secrets.GH_PAT }}@github.com/fred4impact/env-repo.git
           cd env-repo/dev
-          sed -i "s|image:.*|image: your-user/gitops-demo:${{ github.run_number }}|g" deployment.yaml
-          git config user.name github-actions
+          sed -i "s|image:.*|image: runtesting/gitops-demo:${{ github.run_number }}|g" deployment.yaml
+          git config user.name github-actions[bot]
           git config user.email actions@github.com
-          git commit -am "update image"
-          git push
+          git add deployment.yaml
+          git commit -m "Update image to runtesting/gitops-demo:${{ github.run_number }}"
+          git push https://${{ secrets.GH_PAT }}@github.com/fred4impact/env-repo.git

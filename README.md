@@ -1,5 +1,21 @@
 # GitOps App Repository
 
+## GitHub Actions CI/CD Setup
+
+### Required Secrets
+
+Configure these secrets in your GitHub repository settings (Settings → Secrets and variables → Actions):
+
+1. **DOCKER_USER** - Your Docker Hub username
+2. **DOCKER_PASSWORD** - Your Docker Hub password or access token
+3. **GH_PAT** - GitHub Personal Access Token with `repo` permissions (for pushing to env-repo)
+
+### Creating GitHub PAT
+
+1. Go to GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
+2. Generate new token with `repo` scope
+3. Add it as `GH_PAT` secret in your repository
+
 ## About This Flask App
 
 This is a **Flask** application that runs on **port 5000** by default. Flask's default port is 5000, which is why we use it.
