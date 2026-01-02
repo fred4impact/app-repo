@@ -1,8 +1,47 @@
 from flask import Flask
+import os
+
 app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return "Hello from GitOps + ArgoCD!"
+    return '''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>GitOps Demo App</title>
+        <style>
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+                font-family: Arial, sans-serif;
+                background-color: #f5f5f5;
+            }
+            .content {
+                text-align: center;
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="content">
+            Hello from GitOps + ArgoCD!<br>
+            These demo app for GitOps practices from Bilarn
+        </div>
+    </body>
+    </html>
+    '''
 
-app.run(host="0.0.0.0", port=5000)
+@app.route("/health")
+def health():
+    return {"status": "healthy"}, 200
+
+if __name__ == "__main__":
+    # Allow port to be configured via environment variable, default to 5000
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)
