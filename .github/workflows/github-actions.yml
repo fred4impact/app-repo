@@ -2,7 +2,7 @@ name: GitOps Pipeline
 
 on:
   push:
-    branches: ["main"]
+    branches: ["master"]
 
 jobs:
   build:
@@ -14,17 +14,17 @@ jobs:
 
       - name: Login Docker
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | \
-             docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+          docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
 
       - name: Build Image
-        run: docker build -t your-user/gitops-demo:${{ github.run_number }} .
+        run: docker build -t runtesting/gitops-demo:${{ github.run_number }} .
 
       - name: Push Image
-        run: docker push your-user/gitops-demo:${{ github.run_number }}
+        run: docker push runtesting/gitops-demo:${{ github.run_number }}
 
       - name: Update Env Repo
         run: |
-          git clone https://github.com/your/env-repo.git
+          git clone https://github.com/fred4impact/env-repo.git
           cd env-repo/dev
           sed -i "s|image:.*|image: your-user/gitops-demo:${{ github.run_number }}|g" deployment.yaml
           git config user.name github-actions
