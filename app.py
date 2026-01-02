@@ -32,8 +32,11 @@ def home():
     </head>
     <body>
         <div class="content">
-            Hello from GitOps + ArgoCD!<br>
-            These demo app for GitOps practices from Bilarn
+            Hello <br>
+            from GitOps + ArgoCD!<br>
+            These demo app for GitOps practices
+            <br> Flask application for GitOps practices from </br>
+            Bilarn
         </div>
     </body>
     </html>
